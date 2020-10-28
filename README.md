@@ -2,7 +2,7 @@
 Monte carlo simulations and data analysis algorithms for a high-energy physics experiments on positron-induced muon generation.
 
 ### Compilation
-Compiling this software requires g++9 or newer, or a equivalent c++ compiler.
+Compiling this software requires g++9 or newer, or a equivalent c++ compiler (older versions might work as well).
 To compile the binaries under Linux environment use
 
     c++ -o testXXX testXXX.cpp utils.cpp reader.cpp
