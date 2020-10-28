@@ -8,10 +8,10 @@ int main(){
     double thickness = 5.06e15 * 0.03; //GeV^-1
     double eta = 4* 1e-18; // GeV^3
     double E = 49; // GeV
-    Generator g = Generator(E, 0.5, eta, thickness, 1000, 360, false);
+    Generator g = Generator(E, 0.5, eta, thickness, 1000, 360);
     int n = 10000;
     for(int i=0; i<n; i++){
-        vector<double> tmp = g.generate_event();
+        vector<double> tmp = g.generate_event(false);
 
         for(double dd : tmp)
             cout << dd << " ";
