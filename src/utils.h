@@ -30,4 +30,7 @@ vector<Line> parameters_from_measures(vector<vector<vector<Vec3D>>>& measures,
                                                 double z_start, double L, double B, double q
                                             );
 
+vector<Line> compensate_offset_divergence(vector<Line> event);
+
+
 #endif

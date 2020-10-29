@@ -29,12 +29,13 @@ int main(){
     m2_dects.push_back(dect9);
     m2_dects.push_back(dect9b);
 
-    uniform_real_distribution<double> u(0, 1000000000);
-    vector<vector<Line>> lines = read_parameters("dataset_param_c.txt");
+    uniform_real_distribution<double> u(0, 1000000000); // use this as rng, todo: find better way
+    vector<vector<Line>> lines = read_parameters("dataset_param_c.txt"); // read from file
     int cnt = 0;
 
     for(vector<Line> event : lines){
         if(cnt++>= 2000) break;
+        // test accuracy of the trajectory reconstruction as the modulo of the difference between real and reconstructed momentum
         vector<vector<vector<Vec3D>>> meas = measures_from_parameters(event[0], event[1], event[2], p_dects, m_dects, m2_dects, 0.0001, 1, 9, 2, 1.7, 1.602e-19, mt19937((int)u(gen)));
         vector<Line> lines_r = parameters_from_measures(meas, p_dects, m_dects, m2_dects, 0.0001, 9, 2, 1.7, 1.602e-19);
         Vec3D p_error_1 = event[0].dir - lines_r[0].dir;

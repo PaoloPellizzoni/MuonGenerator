@@ -287,15 +287,40 @@ vector<Line> parameters_from_measures(vector<vector<vector<Vec3D>>>& measures,
     //Vec3D point_pos = Vec3D(positron_param[0], positron_param[1], 0);
 
 
-    Line mu_up_trj = Line(point_up, dir_up);
-    Line mu_down_trj = Line(point_down, dir_down);
+    Line mu_up_trj_tmp = Line(point_up, dir_up);
+    Line mu_down_trj_tmp = Line(point_down, dir_down);
 
-    Vec3D point_pos = mu_up_trj.line_quasi_intersection(mu_down_trj);
+    Vec3D point_pos = mu_up_trj_tmp.line_quasi_intersection(mu_down_trj_tmp);
     Line pos_trj = Line(point_pos, dir_pos);
+    Line mu_up_trj = Line(point_pos, dir_up);
+    Line mu_down_trj = Line(point_pos, dir_down);
 
     ret[0] = pos_trj;
     ret[1] = mu_up_trj;
     ret[2] = mu_down_trj;
 
+    return ret;
+}
+
+
+vector<Line> compensate_offset_divergence(vector<Line> event){
+    // needs (positron, muon1, muon2) as Lines
+    double alpha = atan2(event[0].dir.y, event[0].dir.z); // around x
+    double beta = atan2(event[0].dir.x, hypot(event[0].dir.z, event[0].dir.x) );
+    double cosA = cos(alpha);
+    double sinA = sin(alpha);
+    double cosB = cos(beta);
+    double sinB = sin(beta);
+    double z = event[0].point.z;
+    vector<Line> ret;
+    for(Line l : event){
+        double px = l.dir.x;
+        double py = l.dir.y;
+        double pz = l.dir.z;
+        double px_n = px*cosB - py*sinA*sinB - pz*cosA*sinB;
+        double py_n = py*cosA - pz*sinA;
+        double pz_n = px*sinB + py*sinA*cosB + pz*cosA*cosB;
+        ret.push_back(Line(Vec3D(0,0,z), Vec3D(px_n, py_n, pz_n)));
+    }
     return ret;
 }

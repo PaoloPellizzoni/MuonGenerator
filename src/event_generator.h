@@ -20,12 +20,12 @@ private:
     vector<double> depth_pdf;
     discrete_distribution<int> theta_distribution;
     discrete_distribution<int> depth_distribution;
-    double d_theta, dz;
+    double d_theta, dz, genertorDist;
     double nominal_energy, energy_std, elec_density;
     int depth_subd, theta_subd;
 
 public:
-    Generator(double _nominal_energy, double _energy_std, double _elec_density, double thickness, int _depth_subd, int _theta_subd, mt19937 _gen = mt19937(time(0))){
+    Generator(double _nominal_energy, double _energy_std, double _elec_density, double thickness, int _depth_subd, int _theta_subd, double _genertorDist, mt19937 _gen = mt19937(time(0))){
         gen = _gen;
         unif = uniform_real_distribution<double>(0, 1);
         gauss = normal_distribution<double>(0, 1);
@@ -34,6 +34,7 @@ public:
         depth_subd = _depth_subd;
         theta_subd = _theta_subd;
         elec_density = _elec_density;
+        genertorDist = _genertorDist;
         theta_pdf = vector<double>(theta_subd);
         depth_pdf = vector<double>(depth_subd);
         d_theta = pi/theta_subd;
@@ -108,12 +109,15 @@ public:
 
         //rotation
         if(rot){
-            double alpha = unif(gen)*0.001;
-            double beta = unif(gen)*0.001;
+            double alpha = unif(gen)*0.001; //around x
+            double beta = unif(gen)*0.001;  //around y
             double cosA = cos(alpha);
             double sinA = sin(alpha);
             double cosB = cos(beta);
             double sinB = sin(beta);
+
+            ans[0] += genertorDist*tan(beta); //add offset on x due to divergence
+            ans[1] += genertorDist*tan(alpha); //add offset on y due to divergence
             //muon 1
             ans[3] = px_1*cosB + pz_1*sinB;
             ans[4] = px_1*sinA*sinB - pz_1*sinA*cosB + py_1*cosA;
